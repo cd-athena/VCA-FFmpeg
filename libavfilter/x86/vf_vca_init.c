@@ -18,6 +18,7 @@
  */
 
 #include "config.h"
+#include "libavcodec/x86/constants.h"
 #include "libavutil/attributes.h"
 #include "libavutil/cpu.h"
 #include "libavutil/x86/cpu.h"
