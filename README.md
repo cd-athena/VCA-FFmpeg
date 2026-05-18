@@ -1,13 +1,13 @@
 # VCA  Filter Plug-in for FFmpeg
 
-`VCA <https://vca.itec.aau.at/>`_ is an open source video complexity analyzer. The primary objective of VCA spatial and temporal complexity predictor for every frame/video segment/video in order to enhance predicting encoding parameters for applications like online per-title encoding. 
+[VCA](https://vca.itec.aau.at/)  is an open source video complexity analyzer. The primary objective of VCA spatial and temporal complexity predictor for every frame/video segment/video in order to enhance predicting encoding parameters for applications like online per-title encoding. 
 
 VCA is available under the GPLv3 license. More details on
 the VCA method can be found in the following scientific papers:
 
-1. Vignesh V Menon, Christian Feldmann, Klaus Schoeffmann, Mohammad Ghanbari, and Christian Timmerer. 2023. Green Video Complexity Analysis for Efficient Encoding in Adaptive Video Streaming. In Proceedings of the First International ACM Green Multimedia Systems Workshop (GMSys 2023). Association for Computing Machinery, New York, NY, USA, 259–264. `https://doi.org/10.1145/3593908.3593942 <https://doi.org/10.1145/3593908.3593942>`_
+1. Vignesh V Menon, Christian Feldmann, Klaus Schoeffmann, Mohammad Ghanbari, and Christian Timmerer. 2023. Green Video Complexity Analysis for Efficient Encoding in Adaptive Video Streaming. In Proceedings of the First International ACM Green Multimedia Systems Workshop (GMSys 2023). Association for Computing Machinery, New York, NY, USA, 259–264. [https://doi.org/10.1145/3593908.3593942](https://doi.org/10.1145/3593908.3593942)
 
-2. Vignesh V Menon, Christian Feldmann, Hadi Amirpour, Mohammad Ghanbari, and Christian Timmerer. 2022. VCA: video complexity analyzer. In Proceedings of the 13th ACM Multimedia Systems Conference (MMSys '22). Association for Computing Machinery, New York, NY, USA, 259–264. `https://doi.org/10.1145/3524273.3532896 <https://doi.org/10.1145/3524273.3532896>`_
+2. Vignesh V Menon, Christian Feldmann, Hadi Amirpour, Mohammad Ghanbari, and Christian Timmerer. 2022. VCA: video complexity analyzer. In Proceedings of the 13th ACM Multimedia Systems Conference (MMSys '22). Association for Computing Machinery, New York, NY, USA, 259–264. [https://doi.org/10.1145/3524273.3532896](https://doi.org/10.1145/3524273.3532896)
 
 This software allows to determine VCA output values for a video streams using the *FFmpeg* software suite, available at https://ffmpeg.org/
     
@@ -49,3 +49,26 @@ Then you have to manually include the lines provided in `allfilters.c`, `Makefil
 
 ## Usage 
 
+VCA in principle support any video content with YUV pixel format. Filter supports following command line options:
+| Name                | Description                                    | Values       | Default |
+| ------------------- | ---------------------------------------------- | ------------ | ------- |
+| `blocksize`         | Set size of the DCT block for analysis         | 8, 16, 32    | 32      |
+| `n_frames`                 | Set number of frames to process (-1 all)       | -1, `INT_MAX`| -1      |
+| `lowpass`           | Enable low-pass DCT (significantly faster)     | true, false  | true    |
+| `simd`              | Enable acceralation with SIMD                  | true, false  | true    |
+| `file`              | Set file where to print analysis information   | string  | `NULL`    |
+| `brightness` | Enable analysis of brightness                | true, false  | false   |
+| `chroma`     | Enable analysis of UV chroma channels          | true, false  | false   |
+| `yuview`            | Produce a detailed blockwise output for YUView | true, false  | false   |
+
+Example usage:
+
+Enable brightness with blocksize 16 write to vca.csv
+```ssh
+./ffmpeg -i input.y4m -vf vca=blocksize=16:brightness=true:file=vca.csv -f null -
+```
+
+Enable chroma and brightness calculations with blocksize 332 write to vca.csv
+```ssh
+./ffmpeg -i input.y4m -vf vca=chroma=true:brightness=true:file=vca.csv -f null -
+```
