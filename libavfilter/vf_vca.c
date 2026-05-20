@@ -129,8 +129,8 @@ static void calc_vca_##BLOCKSIZE##_isnf##IS_NOT_FIRST##_brig##IS_BRIGHNTESS##_yu
     int enable_lowpass, int slice_start, int slice_end, ResultSums *partial_sum,                      \
     void (*perform_dct)(const int16_t* block, int16_t* dst, int bit_depth)) {                       \
     int block_i = (slice_start / BLOCKSIZE) * plane->w_blocks;                                      \
-    ALIGN_VAR_32(int16_t, block_buffer[BLOCKSIZE * BLOCKSIZE]);                                     \
-    ALIGN_VAR_32(int16_t, out_buffer[BLOCKSIZE * BLOCKSIZE]);                                       \
+    DECLARE_ALIGNED_32(int16_t, block_buffer[BLOCKSIZE * BLOCKSIZE]);                                     \
+    DECLARE_ALIGNED_32(int16_t, out_buffer[BLOCKSIZE * BLOCKSIZE]);                                       \
     const unsigned bit_depth = plane->bit_depth;                                                    \
     for (unsigned blockY = slice_start; blockY < slice_end; blockY += BLOCKSIZE) {                  \
         int padding_b = FFMAX(((int)(blockY + BLOCKSIZE) - (int)(plane->h_pxls_src)), 0);           \

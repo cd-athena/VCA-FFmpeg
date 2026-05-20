@@ -91,8 +91,8 @@ static void ff_dct32_avx2(const int16_t *src, int16_t *dst, int bit_depth) {
 }
 
 static void ff_lowpass_dct16_avx2(const int16_t *src, int16_t *dst, int bit_depth) {
-    ALIGN_VAR_32(int16_t, coef[8 * 8]);
-    ALIGN_VAR_32(int16_t, avg_block[8 * 8]);
+    DECLARE_ALIGNED_32(int16_t, coef[8 * 8]);
+    DECLARE_ALIGNED_32(int16_t, avg_block[8 * 8]);
 
     int32_t totalSum = 0;
     int16_t sum = 0;
@@ -131,8 +131,8 @@ static void ff_lowpass_dct16_avx2(const int16_t *src, int16_t *dst, int bit_dept
 }
 
 static void ff_lowpass_dct32_avx2(const int16_t *src, int16_t *dst, int bit_depth) {
-    ALIGN_VAR_32(int16_t, coef[16 * 16]);
-    ALIGN_VAR_32(int16_t, avg_block[16 * 16]);
+    DECLARE_ALIGNED_32(int16_t, coef[16 * 16]);
+    DECLARE_ALIGNED_32(int16_t, avg_block[16 * 16]);
    
     int32_t totalSum = 0;
     int16_t sum = 0;

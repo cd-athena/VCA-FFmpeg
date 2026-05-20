@@ -370,7 +370,7 @@ void ff_vca_dct4_c(const int16_t* block, int16_t* dst, int bit_depth)
     const int shift_1st = 1 + bit_depth - 8;
     const int shift_2nd = 8;
 
-    ALIGN_VAR_32(int16_t, coef[4 * 4]);
+    DECLARE_ALIGNED_32(int16_t, coef[4 * 4]);
 
     partial_butterfly4(block, coef, shift_1st, 4);
     partial_butterfly4(coef, dst, shift_2nd, 4);
@@ -381,7 +381,7 @@ void ff_vca_dct8_c(const int16_t* block, int16_t* dst, int bit_depth)
     const int shift_1st = 2 + bit_depth - 8;
     const int shift_2nd = 9;
 
-    ALIGN_VAR_32(int16_t, coef[8 * 8]);
+    DECLARE_ALIGNED_32(int16_t, coef[8 * 8]);
 
     partial_butterfly8(block, coef, shift_1st, 8);
     partial_butterfly8(coef, dst, shift_2nd, 8);
@@ -392,7 +392,7 @@ void ff_vca_dct16_c(const int16_t* block, int16_t* dst, int bit_depth)
     const int shift_1st = 3 + bit_depth - 8;
     const int shift_2nd = 10;
 
-    ALIGN_VAR_32(int16_t, coef[16 * 16]);
+    DECLARE_ALIGNED_32(int16_t, coef[16 * 16]);
 
     partial_butterfly16(block, coef, shift_1st, 16);
     partial_butterfly16(coef, dst, shift_2nd, 16);
@@ -403,7 +403,7 @@ void ff_vca_dct32_c(const int16_t* block, int16_t* dst, int bit_depth)
     const int shift_1st = 4 + bit_depth - 8;
     const int shift_2nd = 11;
 
-    ALIGN_VAR_32(int16_t, coef[32 * 32]);
+    DECLARE_ALIGNED_32(int16_t, coef[32 * 32]);
 
     partial_butterfly32(block, coef, shift_1st, 32);
     partial_butterfly32(coef, dst, shift_2nd, 32);
@@ -411,8 +411,8 @@ void ff_vca_dct32_c(const int16_t* block, int16_t* dst, int bit_depth)
 
 void ff_vca_lowpass_dct8_c(const int16_t* src, int16_t* dst, int bit_depth)
 {
-    ALIGN_VAR_32(int16_t, coef[4 * 4]);
-    ALIGN_VAR_32(int16_t, avg_block[4 * 4]);
+    DECLARE_ALIGNED_32(int16_t, coef[4 * 4]);
+    DECLARE_ALIGNED_32(int16_t, avg_block[4 * 4]);
     
     int16_t totalSum = 0;
     int16_t sum = 0;
@@ -441,8 +441,8 @@ void ff_vca_lowpass_dct8_c(const int16_t* src, int16_t* dst, int bit_depth)
 
 void ff_vca_lowpass_dct16_c(const int16_t* src, int16_t* dst, int bit_depth)
 {
-    ALIGN_VAR_32(int16_t, coef[8 * 8]);
-    ALIGN_VAR_32(int16_t, avg_block[8 * 8]);
+    DECLARE_ALIGNED_32(int16_t, coef[8 * 8]);
+    DECLARE_ALIGNED_32(int16_t, avg_block[8 * 8]);
 
     int32_t totalSum = 0;
     int16_t sum = 0;
@@ -468,8 +468,8 @@ void ff_vca_lowpass_dct16_c(const int16_t* src, int16_t* dst, int bit_depth)
 
 void ff_vca_lowpass_dct32_c(const int16_t* src, int16_t* dst, int bit_depth)
 {
-    ALIGN_VAR_32(int16_t, coef[16 * 16]);
-    ALIGN_VAR_32(int16_t, avg_block[16 * 16]);
+    DECLARE_ALIGNED_32(int16_t, coef[16 * 16]);
+    DECLARE_ALIGNED_32(int16_t, avg_block[16 * 16]);
    
     int32_t totalSum = 0;
     int16_t sum = 0;
