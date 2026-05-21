@@ -53,12 +53,12 @@ VCA in principle support any video content with YUV pixel format. Filter support
 | Name                | Description                                    | Values       | Default |
 | ------------------- | ---------------------------------------------- | ------------ | ------- |
 | `blocksize`         | Set size of the DCT block for analysis         | 8, 16, 32    | 32      |
-| `n_frames`                 | Set number of frames to process (-1 all)       | -1, `INT_MAX`| -1      |
+| `n`                 | Set number of frames to process (-1 all)       | -1, `INT_MAX`| -1      |
 | `lowpass`           | Enable low-pass DCT (significantly faster)     | true, false  | true    |
 | `simd`              | Enable acceralation with SIMD                  | true, false  | true    |
-| `file`              | Set file where to print analysis information   | string  | `NULL`    |
-| `brightness` | Enable analysis of brightness                | true, false  | false   |
-| `chroma`     | Enable analysis of UV chroma channels          | true, false  | false   |
+| `file`              | Set file where to print analysis information   | string       | `NULL`  |
+| `brightness` | Enable analysis of brightness                         | true, false  | false   |
+| `chroma`     | Enable analysis of UV chroma channels                 | true, false  | false   |
 | `yuview`            | Produce a detailed blockwise output for YUView | true, false  | false   |
 
 Example usage:
