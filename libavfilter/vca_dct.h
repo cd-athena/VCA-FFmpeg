@@ -23,6 +23,7 @@
 
 #include "avfilter.h"
 #include "libavutil/eval.h"
+#include "libavutil/mem_internal.h"
 #include "libavformat/avio.h"
 
 #ifndef AVFILTER_VCADCT_H
