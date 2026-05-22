@@ -26,7 +26,7 @@ The plugin includes `install_vca.sh` shell script to copy vca source files and a
 
 Note that neither `install_vca.sh` nor vca source files should be moved to another folder for `install_vca.sh` to work.
 
-Provided all copies and changes were succesful now you can configure and compile FFmpeg according to your operating system and requirements, there is no known conflicts and no special provisions for compilation must be made:
+Provided all copies and changes were succesful now you can (re)configure and (re)compile FFmpeg according to your operating system and requirements, there is no known conflicts and no special provisions for compilation must be made:
 
 ```
 cd ffmpeg
