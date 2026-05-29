@@ -451,7 +451,7 @@ static int config_input(AVFilterLink *inlink)
         if(v->enable_brightness)
             v->print(ctx, AV_LOG_INFO, ",L");
         if (v->enable_chroma)
-            v->print(ctx, AV_LOG_INFO, ",EV,LV,hV,EU,LU,hE");
+            v->print(ctx, AV_LOG_INFO, ",EV,hV,EU,hE");
         if(v->enable_brightness && v->enable_chroma)
             v->print(ctx, AV_LOG_INFO, ",LV,LU");
 
