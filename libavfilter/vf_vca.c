@@ -179,6 +179,25 @@ static void* calc_fn_table[3][2][2][2] = {
     BRIGHT(32)
 };
 
+#define WRITE_YUVIEW_INFO(TYPE, EXPR) \
+static void write_yuview_##TYPE(AVFilterContext *ctx, VCAPlaneInfo *plane, VCAContext *v,\
+                                int frame_n, TYPE *array, int feature_i){ \
+    int block_i = 0; \
+    for (unsigned y = 0; y < plane->h_blocks; y++) { \
+        for (unsigned x = 0; x < plane->w_blocks; x++) { \
+            v->print(ctx, AV_LOG_INFO, \
+                "%d;%d;%d;%d;%d;%d;"EXPR"\n", \
+                frame_n, x*v->blocksize, y*v->blocksize, \
+                v->blocksize, v->blocksize, feature_i, \
+                array[block_i]); \
+            block_i++; \
+        } \
+    } \
+}
+
+WRITE_YUVIEW_INFO(uint32_t, "%d")
+WRITE_YUVIEW_INFO(double, "%.0f")
+
 
 static void print_log(AVFilterContext *ctx, int lvl, const char *msg, ...)
 {
@@ -295,23 +314,22 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
 
     // Dump info;
     if (v->yuview) {
-        int block_i = 0;
-        for (unsigned y = 0; y < v->plane[0]->h_blocks; y ++) {
-            for (unsigned x = 0; x < v->plane[0]->w_blocks; x ++) {
-                v->print(ctx, AV_LOG_INFO, "%d;%d;%d;%d;%d;%d;%d\n", inl->frame_count_out, 
-                        x * v->blocksize, y * v->blocksize, v->blocksize, v->blocksize, 
-                        0, v->result[0]->energy_prev[block_i]);
-                        block_i++;
-            } 
+        write_yuview_uint32_t(ctx, v->plane[0], v, inl->frame_count_out, v->result[0]->energy_prev, 0);
+        write_yuview_double  (ctx, v->plane[0], v, inl->frame_count_out, v->result[0]->energy_dif,  1);
+        if(v->enable_brightness) { 
+            write_yuview_uint32_t(ctx, v->plane[0], v, inl->frame_count_out, v->result[0]->brightness, 2);
         }
-        block_i = 0;
-        for (unsigned y = 0; y < v->plane[0]->h_blocks; y ++) {
-            for (unsigned x = 0; x < v->plane[0]->w_blocks; x ++) {
-                v->print(ctx, AV_LOG_INFO, "%d;%d;%d;%d;%d;%d;%.0f\n", inl->frame_count_out,
-                        x * v->blocksize, y * v->blocksize, v->blocksize, v->blocksize, 
-                        1, v->result[0]->energy_dif[block_i]);
-                        block_i++;
-            } 
+        if(v->enable_chroma) { 
+            write_yuview_uint32_t(ctx, v->plane[1], v, inl->frame_count_out, v->result[1]->energy_prev, 3);
+            write_yuview_double  (ctx, v->plane[1], v, inl->frame_count_out, v->result[1]->energy_dif,  4);
+            if(v->enable_brightness) { 
+                write_yuview_uint32_t(ctx, v->plane[1], v, inl->frame_count_out, v->result[1]->brightness, 5);
+            }
+            write_yuview_uint32_t(ctx, v->plane[2], v, inl->frame_count_out, v->result[2]->energy_prev, 6);
+            write_yuview_double  (ctx, v->plane[2], v, inl->frame_count_out, v->result[2]->energy_dif,  7);
+            if(v->enable_brightness) { 
+                write_yuview_uint32_t(ctx, v->plane[2], v, inl->frame_count_out, v->result[2]->brightness, 8);
+            }
         }
     } else {
         v->print(ctx, AV_LOG_INFO,
@@ -400,16 +418,40 @@ static int config_input(AVFilterLink *inlink)
         v->print(ctx, AV_LOG_INFO, "%%;%%;POC;X-position of the left top pixel in the block;Y-position of the left top pixel in the block;");
         v->print(ctx, AV_LOG_INFO, "Width of the block;Height of the block; Type-ID;Type specific value\n");
         v->print(ctx, AV_LOG_INFO, "%%;seq-specs;%s;%s;%d;%d;%d\n", "file", "layer0", v->plane[0]->w_pxls, v->plane[0]->h_pxls, 24);
-        v->print(ctx, AV_LOG_INFO, "%%;type;0;BlockEnergy;range\n");
-        v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;10000;heat\n");
-        v->print(ctx, AV_LOG_INFO, "%%;type;1;TempEnergyDiff;range\n");
-        v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;3000;heat\n");
+        v->print(ctx, AV_LOG_INFO, "%%;type;0;EnergyY;range\n");
+        v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;30000;hot\n");
+        v->print(ctx, AV_LOG_INFO, "%%;type;1;EnergyGradientY;range\n");
+        v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;10000;cool\n");
+        if(v->enable_brightness){
+            v->print(ctx, AV_LOG_INFO, "%%;type;2;Brightness;range\n");
+            v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;255;gray\n");
+        }
+         if (v->enable_chroma) {
+            v->print(ctx, AV_LOG_INFO, "%%;seq-specs;%s;%s;%d;%d;%d\n", "file", "layer1", v->plane[1]->w_pxls, v->plane[1]->h_pxls, 24);
+            v->print(ctx, AV_LOG_INFO, "%%;type;3;EnergyU;range\n");
+            v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;10000;hot\n");
+            v->print(ctx, AV_LOG_INFO, "%%;type;4;EnergyGradientU;range\n");
+            v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;3000;cool\n");
+            if(v->enable_brightness){
+                v->print(ctx, AV_LOG_INFO, "%%;type;5;BrightnessU;range\n");
+                v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;255;gray\n");
+            }
+            v->print(ctx, AV_LOG_INFO, "%%;seq-specs;%s;%s;%d;%d;%d\n", "file", "layer2", v->plane[2]->w_pxls, v->plane[2]->h_pxls, 24);
+            v->print(ctx, AV_LOG_INFO, "%%;type;6;EnergyV;range\n");
+            v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;10000;hot\n");
+            v->print(ctx, AV_LOG_INFO, "%%;type;7;EnergyGradientV;range\n");
+            v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;3000;cool\n");
+            if(v->enable_brightness){
+                v->print(ctx, AV_LOG_INFO, "%%;type;8;BrightnessV;range\n");
+                v->print(ctx, AV_LOG_INFO, "%%;defaultRange;0;255;gray\n");
+            }
+        }
     } else {
         v->print(ctx, AV_LOG_INFO, "POC,E,h");
         if(v->enable_brightness)
             v->print(ctx, AV_LOG_INFO, ",L");
         if (v->enable_chroma)
-            v->print(ctx, AV_LOG_INFO, ",EV,LV,hV,EU,LU,hE");
+            v->print(ctx, AV_LOG_INFO, ",EV,hV,EU,hE");
         if(v->enable_brightness && v->enable_chroma)
             v->print(ctx, AV_LOG_INFO, ",LV,LU");
 
