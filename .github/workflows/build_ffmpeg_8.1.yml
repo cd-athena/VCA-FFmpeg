@@ -27,8 +27,8 @@ jobs:
           cd ffmpeg
           git checkout n8.1
 
-      - name: Update install_filter.sh permissions
-        run: chmod +x install_filter.sh
+      - name: Update install_vca.sh permissions
+        run: chmod +x install_vca.sh
 
       - name: Install VCA
         run: |
