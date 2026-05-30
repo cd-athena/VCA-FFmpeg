@@ -1,0 +1,55 @@
+name: FFmpeg Integration
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            yasm \
+            nasm \
+            pkg-config
+
+      - name: Clone FFmpeg
+        run: |
+          git clone https://github.com/FFmpeg/FFmpeg.git ffmpeg
+          cd ffmpeg
+          git checkout n8.1
+
+      - name: Install VCA
+        run: |
+          ./install_vca.sh ./ffmpeg
+
+      - name: Configure FFmpeg
+        run: |
+          cd ffmpeg
+          ./configure \
+            --disable-doc \
+            --disable-debug
+
+      - name: Build FFmpeg
+        run: |
+          cd ffmpeg
+          make -j$(nproc)
+
+      - name: Verify VCA exists
+        run: |
+          ./ffmpeg/ffmpeg -filters | grep vca
+
+      - name: VCA Run
+        run: |
+          ./ffmpeg/ffmpeg \
+            -f lavfi -i testsrc=size=128x128:rate=1 \
+            -vf vca \
+            -f null -
