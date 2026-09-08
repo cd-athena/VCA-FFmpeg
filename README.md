@@ -81,13 +81,14 @@ Enable chroma and brightness calculations with blocksize 32 write to vca.csv
 If you use this project in your research, please cite:
 
 ```bibtex
-@inproceedings{vca,
-  title={VCA: Video Complexity Analyzer},
-  author={Menon, Vignesh V and Feldmann, Christian and Amirpour, Hadi and Ghanbari, Mohammad and Timmerer, Christian},
-  booktitle={Proceedings of the 13th ACM Multimedia Systems Conference},
-  pages={259--264},
-  year={2022},
-  publisher={ACM},
-  doi={10.1145/3524273.3532896}
+@inproceedings{vca-ffmpeg,
+  title={VCA-FFMPEG: A FFmpeg Filter for Video Complexity Analysis},
+  author={Amirpour, Hadi and Skipenko, Mykyta and Timmerer, Christian},
+  booktitle = {Proceedings of the 34rd ACM International Conference on Multimedia},
+  year={2026},
+  publisher = {Association for Computing Machinery},
+  doi={10.1145/3767308.3834752},
+  location = {Rio de Janeiro, Brazil},
+  series = {MM '26}
 }
 ```
